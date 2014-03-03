@@ -3,7 +3,7 @@ define('MODX_API_MODE', true);
 require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/index.php';
 
 $modx->getService('error','error.modError');
-$modx->setLogLevel(modX::LOG_LEVEL_INFO);
+$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
 $modx->setLogTarget('FILE');
 
 /* @var miniShop2 $miniShop2 */
