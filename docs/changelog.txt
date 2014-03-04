@@ -1,5 +1,9 @@
 Changelog for Robokassa.
 
+1.0.1 pl
+==============
+- Fixed log level INFO in robokassa.php
+
 1.0.0 beta
 ==============
 - Initial release.
