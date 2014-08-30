@@ -58,7 +58,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface {
 	/* @inheritdoc} */
 	public function receive(msOrder $order, $params = array()) {
 		$id = $order->get('id');
-		$sum = number_format($order->get('cost'), 2, '.', '');
+		$sum = number_format($order->get('cost'), 6, '.', '');
 
 		$crc = md5($sum.':'.$id.':'.$this->config['pass2']);
 		if (strtoupper($_REQUEST['SignatureValue']) == strtoupper($crc)) {
