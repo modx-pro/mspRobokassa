@@ -7,6 +7,7 @@ if (!class_exists('msPaymentInterface')) {
 class Robokassa extends msPaymentHandler implements msPaymentInterface
 {
     public $config;
+    /** @var modX */
     public $modx;
 
     const LOG_NAME = '[miniShop2:Robokassa]';
@@ -30,7 +31,9 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'pass2' => $this->modx->getOption('ms2_payment_rbks_pass2'),
             'currency' => $this->modx->getOption('ms2_payment_rbks_currency', '', true),
             'culture' => $this->modx->getOption('ms2_payment_rbks_culture', 'ru', true),
-            'json_response' => false
+            'json_response' => false,
+            'fiskal' => $this->modx->getOption('ms2_payment_rbks_fiskal', 'ru', false),
+            'debug' => $this->modx->getOption('ms2_payment_rbks_debug', 'ru', false),
         ], $config);
     }
 
@@ -69,6 +72,17 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'IncCurrLabel' => $this->config['currency'],
             'Culture' => $this->config['culture']
         ];
+
+        if ($this->config['fiskal']) {
+            $receipt = $this->modx->toJSON($this->getReceipt($order));
+            $hashData['Receipt'] = $receipt;
+            $request['Receipt'] = $receipt;
+        }
+
+        if ($this->config['debug']) {
+            $this->log('Request Link:', $request);
+            $this->log('HashData:', $hashData);
+        }
 
         return $this->config['checkoutUrl'] . '?' . http_build_query($request);
     }

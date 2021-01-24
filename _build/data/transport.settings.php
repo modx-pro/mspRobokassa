@@ -40,6 +40,14 @@ $tmp = [
         'xtype' => 'numberfield',
         'value' => 0,
     ],
+    'debug' => [
+        'type' => 'combo-boolean',
+        'value' => false,
+    ],
+    'fiskal' => [
+        'type' => 'combo-boolean',
+        'value' => false,
+    ],
 ];
 
 foreach ($tmp as $k => $v) {
