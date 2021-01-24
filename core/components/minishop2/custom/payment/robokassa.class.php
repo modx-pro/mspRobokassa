@@ -9,24 +9,27 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     public $config;
     public $modx;
 
-    function __construct(xPDOObject $object, $config = array())
+    function __construct(xPDOObject $object, $config = [])
     {
         $this->modx = &$object->xpdo;
 
         $siteUrl = $this->modx->getOption('site_url');
-        $assetsUrl = $this->modx->getOption('minishop2.assets_url', $config, $this->modx->getOption('assets_url') . 'components/minishop2/');
+        $assetsUrl = $this->modx->getOption(
+            'minishop2.assets_url', $config,
+            $this->modx->getOption('assets_url') . 'components/minishop2/'
+        );
         $paymentUrl = $siteUrl . substr($assetsUrl, 1) . 'payment/robokassa.php';
 
-        $this->config = array_merge(array(
-            'paymentUrl' => $paymentUrl
-        , 'checkoutUrl' => $this->modx->getOption('ms2_payment_rbks_url', null, 'https://merchant.roboxchange.com/Index.aspx', true)
-        , 'login' => $this->modx->getOption('ms2_payment_rbks_login')
-        , 'pass1' => $this->modx->getOption('ms2_payment_rbks_pass1')
-        , 'pass2' => $this->modx->getOption('ms2_payment_rbks_pass2')
-        , 'currency' => $this->modx->getOption('ms2_payment_rbks_currency', '', true)
-        , 'culture' => $this->modx->getOption('ms2_payment_rbks_culture', 'ru', true)
-        , 'json_response' => false
-        ), $config);
+        $this->config = array_merge([
+            'paymentUrl' => $paymentUrl,
+            'checkoutUrl' => $this->modx->getOption('ms2_payment_rbks_url', null, 'https://merchant.roboxchange.com/Index.aspx', true),
+            'login' => $this->modx->getOption('ms2_payment_rbks_login'),
+            'pass1' => $this->modx->getOption('ms2_payment_rbks_pass1'),
+            'pass2' => $this->modx->getOption('ms2_payment_rbks_pass2'),
+            'currency' => $this->modx->getOption('ms2_payment_rbks_currency', '', true),
+            'culture' => $this->modx->getOption('ms2_payment_rbks_culture', 'ru', true),
+            'json_response' => false
+        ], $config);
     }
 
 
@@ -35,7 +38,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         $link = $this->getPaymentLink($order);
 
-        return $this->success('', array('redirect' => $link));
+        return $this->success('', ['redirect' => $link]);
     }
 
 
@@ -54,8 +57,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'Culture' => $this->config['culture']
         ];
 
-        $link = $this->config['checkoutUrl'] . '?' . http_build_query($request);
-        return $link;
+        return $this->config['checkoutUrl'] . '?' . http_build_query($request);
     }
 
 
