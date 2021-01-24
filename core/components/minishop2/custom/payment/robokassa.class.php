@@ -9,6 +9,8 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     public $config;
     public $modx;
 
+    const LOG_NAME = '[miniShop2:Robokassa]';
+
     function __construct(xPDOObject $object, $config = [])
     {
         $this->modx = &$object->xpdo;
@@ -41,18 +43,29 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         return $this->success('', ['redirect' => $link]);
     }
 
-
+    /**
+     * Метод получения ссылки на оплату
+     * @param msOrder $order
+     * @return string
+     */
     public function getPaymentLink(msOrder $order)
     {
         $id = $order->get('id');
         $sum = number_format($order->get('cost'), 2, '.', '');
+        $hashData = [
+            $this->config['login'],
+            $sum,
+            $id,
+            $this->config['pass1']
+        ];
+
         $request = [
             'url' => $this->config['checkoutUrl'],
             'MrchLogin' => $this->config['login'],
             'OutSum' => $sum,
             'InvId' => $id,
             'Desc' => 'Payment #' . $id,
-            'SignatureValue' => md5($this->config['login'] . ':' . $sum . ':' . $id . ':' . $this->config['pass1']),
+            'SignatureValue' => $this->getHash($hashData),
             'IncCurrLabel' => $this->config['currency'],
             'Culture' => $this->config['culture']
         ];
@@ -68,10 +81,18 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         $crc = strtoupper($_REQUEST['SignatureValue']);
         // Production
         $sum1 = number_format($order->get('cost'), 6, '.', '');
-        $crc1 = strtoupper(md5($sum1 . ':' . $id . ':' . $this->config['pass2']));
+        $crc1 = $this->getHash([
+            $sum1,
+            $id,
+            $this->config['pass2']
+        ]);
         // Test
         $sum2 = number_format($order->get('cost'), 2, '.', '');
-        $crc2 = strtoupper(md5($sum2 . ':' . $id . ':' . $this->config['pass2']));
+        $crc2 = $this->getHash([
+            $sum2,
+            $id,
+            $this->config['pass2']
+        ]);
 
         if ($crc == $crc1 || $crc == $crc2) {
             /* @var miniShop2 $miniShop2 */
@@ -85,11 +106,60 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     }
 
 
+    /**
+     * @param $text
+     * @param array $request
+     */
     public function paymentError($text, $request = [])
     {
-        $this->modx->log(modX::LOG_LEVEL_ERROR, '[miniShop2:Robokassa] ' . $text . ', request: ' . print_r($request, 1));
+        $this->modx->log(
+            modX::LOG_LEVEL_ERROR,
+            self::LOG_NAME . ' ' . $text . ', request: ' . print_r($request, true)
+        );
         header("HTTP/1.0 400 Bad Request");
 
         die('ERR: ' . $text);
+    }
+
+    /**
+     * Генерация подписи
+     * @param array $hashData
+     * @param bool $upper
+     * @return string
+     */
+    private function getHash(array $hashData, $upper = true)
+    {
+        $hash = md5(implode(':', $hashData));
+
+        if (!$upper) {
+            return $hash;
+        }
+
+        return strtoupper($hash);
+    }
+
+    /**
+     * Передача товаров для фискализации
+     * @param msOrder $order
+     * @return array
+     */
+    private function getReceipt(msOrder $order)
+    {
+        /** @var msProduct[] $products */
+        $products = $order->getMany('Products');
+
+        if (!$products) {
+            return [];
+        }
+
+
+    }
+
+    private function log($text, $data)
+    {
+        $this->modx->log(
+            modX::LOG_LEVEL_ERROR,
+            self::LOG_NAME . ' ' . $text . ', request: ' . print_r($data, true)
+        );
     }
 }
