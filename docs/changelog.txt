@@ -1,5 +1,11 @@
 Changelog for Robokassa.
 
+1.1.0 pl1
+==============
+- Refactoring for PSR.
+- Add fiskalization for change 01.02.2021
+- Add settings for fiskalization
+
 1.0.2 pl1
 ==============
 - Fixed receive of payments.
