@@ -29,3 +29,6 @@ $_lang['setting_ms2_payment_rbks_fiskal_desc'] = 'Если включено, б�
 
 $_lang['setting_ms2_payment_rbks_debug'] = 'Дебаг Robokassa';
 $_lang['setting_ms2_payment_rbks_debug_desc'] = 'Если включено, будет показывать в логе все запросы и ответы по Robokassa';
+
+$_lang['setting_ms2_payment_rbks_tax'] = 'Налоговая ставка Robokassa';
+$_lang['setting_ms2_payment_rbks_tax_desc'] = 'none|vat0|vat10|vat110|vat20|vat120 подробнее https://docs.robokassa.ru/';

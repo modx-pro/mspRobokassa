@@ -34,6 +34,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'json_response' => false,
             'fiskal' => $this->modx->getOption('ms2_payment_rbks_fiskal', 'ru', false),
             'debug' => $this->modx->getOption('ms2_payment_rbks_debug', 'ru', false),
+            'tax' => $this->modx->getOption('ms2_payment_rbks_tax', 'ru', 'none'),
         ], $config);
     }
 
@@ -182,7 +183,6 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         /** @var msProduct[] $products */
         $products = $order->getMany('Products');
         $out = [
-            'sno' => 'osn', //TODO: Move to settings
             'items' => []
         ];
 
@@ -190,15 +190,12 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             return $out;
         }
 
-
         foreach ($products as $product) {
             $out['items'][] = [
                 'name' => $product->get('name'),
                 'quantity' => $product->get('count'),
                 'sum' => $product->get('cost'),
-                'payment_method' => 'full_payment',
-                'payment_object' => 'commodity',
-                'tax' => 'vat20', //TODO: Move to settings
+                'tax' => $this->config['tax']
             ];
         }
 

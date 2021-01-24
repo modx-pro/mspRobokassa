@@ -48,6 +48,10 @@ $tmp = [
         'type' => 'combo-boolean',
         'value' => false,
     ],
+    'tax' => [
+        'type' => 'textfield',
+        'value' => 'none',
+    ],
 ];
 
 foreach ($tmp as $k => $v) {
