@@ -46,11 +46,11 @@ foreach ($tmp as $k => $v) {
     /* @var modSystemSetting $setting */
     $setting = $modx->newObject('modSystemSetting');
     $setting->fromArray(array_merge(
-        array(
+        [
             'key' => 'ms2_payment_rbks_' . $k,
             'namespace' => 'minishop2',
             'area' => 'ms2_payment',
-        ), $v
+        ], $v
     ), '', true, true);
 
     $settings[] = $setting;
