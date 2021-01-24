@@ -4,7 +4,7 @@
 define('PKG_NAME', 'mspRobokassa');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 
-define('PKG_VERSION', '1.0.2');
+define('PKG_VERSION', '1.1.0');
 define('PKG_RELEASE', 'pl1');
 define('PKG_AUTO_INSTALL', true);
 
