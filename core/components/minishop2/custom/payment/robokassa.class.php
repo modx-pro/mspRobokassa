@@ -55,12 +55,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         $id = $order->get('id');
         $sum = number_format($order->get('cost'), 2, '.', '');
-        $hashData = [
-            $this->config['login'],
-            $sum,
-            $id,
-            $this->config['pass1']
-        ];
+        $hashData = $this->getRequestHashData($order);
 
         $request = [
             'url' => $this->config['checkoutUrl'],
@@ -70,7 +65,8 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'Desc' => 'Payment #' . $id,
             'SignatureValue' => $this->getHash($hashData),
             'IncCurrLabel' => $this->config['currency'],
-            'Culture' => $this->config['culture']
+            'Culture' => $this->config['culture'],
+            'UserIp' => $_SERVER['REMOTE_ADDR'],
         ];
 
         if ($this->config['fiskal']) {
@@ -153,6 +149,30 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     }
 
     /**
+     * Отдает данные для хэширования запроса
+     * @param msOrder $order
+     * @return array
+     */
+    private function getRequestHashData(msOrder $order)
+    {
+        $data = [
+            $this->config['login'],
+            $order->get('sum'),
+            $order->get('id'),
+            $_SERVER['REMOTE_ADDR'],
+        ];
+
+        if ($this->config['fiskal']) {
+            $receipt = $this->modx->toJSON($this->getReceipt($order));
+            $data[] = $receipt;
+        }
+
+        $data[] = $this->config['pass1'];
+
+        return $data;
+    }
+
+    /**
      * Передача товаров для фискализации
      * @param msOrder $order
      * @return array
@@ -161,12 +181,28 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         /** @var msProduct[] $products */
         $products = $order->getMany('Products');
+        $out = [
+            'sno' => 'osn', //TODO: Move to settings
+            'items' => []
+        ];
 
         if (!$products) {
-            return [];
+            return $out;
         }
 
 
+        foreach ($products as $product) {
+            $out['items'][] = [
+                'name' => $product->get('name'),
+                'quantity' => $product->get('count'),
+                'sum' => $product->get('cost'),
+                'payment_method' => 'full_payment',
+                'payment_object' => 'commodity',
+                'tax' => 'vat20', //TODO: Move to settings
+            ];
+        }
+
+        return $out;
     }
 
     private function log($text, $data)
