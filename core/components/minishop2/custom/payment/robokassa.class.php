@@ -72,7 +72,6 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
 
         if ($this->config['fiskal']) {
             $receipt = $this->modx->toJSON($this->getReceipt($order));
-            $hashData['Receipt'] = $receipt;
             $request['Receipt'] = $receipt;
         }
 
