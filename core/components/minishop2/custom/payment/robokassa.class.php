@@ -158,7 +158,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         $data = [
             $this->config['login'],
-            $order->get('sum'),
+            $order->get('cost'),
             $order->get('id'),
             $_SERVER['REMOTE_ADDR'],
         ];
@@ -206,7 +206,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         $this->modx->log(
             modX::LOG_LEVEL_ERROR,
-            self::LOG_NAME . ' ' . $text . ', request: ' . print_r($data, true)
+            self::LOG_NAME . ' ' . $text . print_r($data, true)
         );
     }
 }
