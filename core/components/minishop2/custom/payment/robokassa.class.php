@@ -55,7 +55,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     public function getPaymentLink(msOrder $order)
     {
         $id = $order->get('id');
-        $sum = number_format($order->get('cost'), 2, '.', '');
+        $sum = $this->formatSum($order->get('cost'));
         $hashData = $this->getRequestHashData($order);
 
         $request = [
@@ -64,7 +64,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'OutSum' => $sum,
             'InvId' => $id,
             'Desc' => 'Payment #' . $id,
-            'SignatureValue' => $this->getHash($hashData),
+            'SignatureValue' => $this->getHash($hashData), //TODO: upper false
             'IncCurrLabel' => $this->config['currency'],
             'Culture' => $this->config['culture'],
             'UserIp' => $_SERVER['REMOTE_ADDR'],
@@ -90,14 +90,14 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         $id = $order->get('id');
         $crc = strtoupper($_REQUEST['SignatureValue']);
         // Production
-        $sum1 = number_format($order->get('cost'), 6, '.', '');
+        $sum1 = $this->formatSum($order->get('cost')); //TODO: old decimal 6
         $crc1 = $this->getHash([
             $sum1,
             $id,
             $this->config['pass2']
         ]);
         // Test
-        $sum2 = number_format($order->get('cost'), 2, '.', '');
+        $sum2 = $this->formatSum($order->get('cost'));
         $crc2 = $this->getHash([
             $sum2,
             $id,
@@ -148,6 +148,11 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         return strtoupper($hash);
     }
 
+    private function formatSum($sum, $decimal = 2)
+    {
+        return number_format($sum, $decimal, '.', '');
+    }
+
     /**
      * Отдает данные для хэширования запроса
      * @param msOrder $order
@@ -157,7 +162,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
     {
         $data = [
             $this->config['login'],
-            $order->get('cost'),
+            $this->formatSum($order->get('cost')), //TODO: old decimal 6
             $order->get('id'),
             $_SERVER['REMOTE_ADDR'],
         ];
