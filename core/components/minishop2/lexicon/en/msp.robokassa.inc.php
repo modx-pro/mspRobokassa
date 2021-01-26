@@ -23,3 +23,12 @@ $_lang['setting_ms2_payment_rbks_success_id_desc'] = 'The customer will be sent 
 
 $_lang['setting_ms2_payment_rbks_failure_id'] = 'Robokassa failure page id';
 $_lang['setting_ms2_payment_rbks_failure_id_desc'] = 'The customer will be sent to this page if something went wrong. It is recommended to specify the id of the page with the shopping cart to order output.';
+
+$_lang['setting_ms2_payment_rbks_fiskal'] = 'Fiscalization for Robokassa';
+$_lang['setting_ms2_payment_rbks_fiskal_desc'] = 'If enabled, will transfer the list of goods to Robokassa for fiscalization';
+
+$_lang['setting_ms2_payment_rbks_debug'] = 'Debug Robokassa';
+$_lang['setting_ms2_payment_rbks_debug_desc'] = 'If enabled, it will write all Robokassa requests and responses in the log';
+
+$_lang['setting_ms2_payment_rbks_tax'] = 'Tax Robokassa';
+$_lang['setting_ms2_payment_rbks_tax_desc'] = 'none|vat0|vat10|vat110|vat20|vat120 see https://docs.robokassa.ru/';
