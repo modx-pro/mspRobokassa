@@ -1,5 +1,9 @@
 Changelog for Robokassa.
 
+1.1.1 pl1
+==============
+- Add delivery cost for fiskalization.
+
 1.1.0 pl1
 ==============
 - Refactoring for PSR.

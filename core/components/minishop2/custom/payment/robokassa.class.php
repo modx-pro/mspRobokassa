@@ -203,6 +203,15 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             ];
         }
 
+        if ($order->delivery_cost) {
+            $out['items'][] = [
+                'name' => 'Доставка',
+                'quantity' => 1,
+                'sum' => $order->delivery_cost,
+                'tax' => $this->config['tax']
+            ];
+        }
+
         return $out;
     }
 
