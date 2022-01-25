@@ -66,8 +66,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
             'Desc' => 'Payment #' . $id,
             'SignatureValue' => $this->getHash($hashData), //TODO: upper false
             'IncCurrLabel' => $this->config['currency'],
-            'Culture' => $this->config['culture'],
-            'UserIp' => $_SERVER['REMOTE_ADDR'],
+            'Culture' => $this->config['culture']
         ];
 
         if ($this->config['fiskal']) {
@@ -163,8 +162,7 @@ class Robokassa extends msPaymentHandler implements msPaymentInterface
         $data = [
             $this->config['login'],
             $this->formatSum($order->get('cost')), //TODO: old decimal 6
-            $order->get('id'),
-            $_SERVER['REMOTE_ADDR'],
+            $order->get('id')
         ];
 
         if ($this->config['fiskal']) {
